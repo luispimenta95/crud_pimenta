@@ -1,6 +1,7 @@
 package com.example.crudpimenta.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.crudpimenta.R;
+import com.example.crudpimenta.activity.GerenciarUsuario;
 import com.example.crudpimenta.activity.MainActivity;
 import com.example.crudpimenta.model.Usuario;
 
@@ -71,15 +73,15 @@ public class UserAdapter extends BaseAdapter {
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Sửa " + u.getNome(), Toast.LENGTH_SHORT).show();
-                context.dialogSua(u.getId(), u.getNome());
+                Intent intent = new Intent(view.getContext(), GerenciarUsuario.class);
+                view.getContext().startActivity(intent);
             }
         });
 
         holder.imgDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.xoaCv(u.getId(), u.getNome());
+                context.excluirUsuario(u.getId(), u.getNome());
             }
         });
         return view;
