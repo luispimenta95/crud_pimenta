@@ -59,7 +59,7 @@ public class Database extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean addCongViec(Usuario user){
+    public boolean addUser(Usuario user){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -75,7 +75,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
 
-    public int UpdateCongViec(int id, String name){
+    public int updateUser(int id, String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -147,10 +147,17 @@ public class Database extends SQLiteOpenHelper {
 
     // Get Count person in Table Person
     public int getCongViecCount() {
-        String countQuery = "SELECT  * FROM " + NOME_TABELA;
+        String countQuery = "SELECT  * FROM " + NOME_TABELA ;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
+        return cursor.getCount();
+    }
+
+    public int pesquisaPorCof(String text){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_NOME + "= "+ text + "";
+        Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
     }
 }

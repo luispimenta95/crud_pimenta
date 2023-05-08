@@ -35,6 +35,7 @@ public class GerenciarUsuario extends AppCompatActivity {
     private UserAdapter adapter;
     private Usuario user;
     private Button btnAdd,btnVoltar;
+    private TextView inputNome,inputCpf;
 
 
     @Override
@@ -49,11 +50,13 @@ public class GerenciarUsuario extends AppCompatActivity {
          int id = intent.getIntExtra("id",0);
          btnAdd = (Button) findViewById(R.id.btnAdd);
          btnVoltar = (Button) findViewById(R.id.btnVoltar);
+         inputNome = (TextView) findViewById(R.id.inputNome);
 
          btnAdd.setText("Cadastrar");
          if(id!=0){
              user = bd.recuperaPorId(id);
              btnAdd.setText("Atualizar");
+             inputNome.setText(user.getNome());
 
          }
         btnVoltar.setOnClickListener(new View.OnClickListener() {
@@ -64,12 +67,35 @@ public class GerenciarUsuario extends AppCompatActivity {
                 view.getContext().startActivity(intent);
             }
         });
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+               if(id ==0){
+                   user = new Usuario();
+                   user.setNome(inputNome.getText().toString());
+                   bd.addUser(user);
+                   Toast.makeText(GerenciarUsuario.this, "Registro salvo com sucesso !", Toast.LENGTH_LONG).show();
+               }else{
+
+                   user = bd.recuperaPorId(id);
+                   bd.updateUser(id,inputNome.getText().toString());
+                   Toast.makeText(GerenciarUsuario.this, "Registro atualizado com sucesso !", Toast.LENGTH_LONG).show();
+               }
+                Intent intent = new Intent(view.getContext(), MainActivity.class);
+
+                view.getContext().startActivity(intent);
+            }
+        });
     }
+    }
+
 
    //     Log.d("user", "Valor: "+id);
      //   Log.d("userName", "Valor: "+user.getNome());
 
 
-    }
+
 
 
