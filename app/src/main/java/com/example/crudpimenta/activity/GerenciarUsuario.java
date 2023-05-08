@@ -2,14 +2,17 @@ package com.example.crudpimenta.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,8 @@ public class GerenciarUsuario extends AppCompatActivity {
     //good luck!
     private Database bd;
     private UserAdapter adapter;
+    private TextView textoInicial;
+    private Usuario user;
 
 
     @Override
@@ -38,6 +43,20 @@ public class GerenciarUsuario extends AppCompatActivity {
 
         // instanciar bd
         bd = new Database(GerenciarUsuario.this);
+        Intent intent = getIntent();
+         int id = intent.getIntExtra("id",0);
+         textoInicial =  findViewById(R.id.textoInicial);
+         if(id==0){
+             textoInicial.setText("Tela de cadastro");
+         }else{
+             user = bd.recuperaPorId(id);
+             textoInicial.setText("Tela de edição");
+
+         }
+
+   //     Log.d("user", "Valor: "+id);
+     //   Log.d("userName", "Valor: "+user.getNome());
+
 
     }
 

@@ -98,7 +98,7 @@ public class Database extends SQLiteOpenHelper {
     // Delete a person by ID
 
     //Select a person by ID
-    public Usuario getContactById(int id){
+    public Usuario recuperaPorId(int id){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME},
                 COLUNA_ID + "=?",new String[] { String.valueOf(id) },

@@ -42,11 +42,13 @@ public class MainActivity extends AppCompatActivity {
         btnAdicionar = (Button) findViewById(R.id.btnAddUser);
         btnAdicionar.setText("Adicionar usuário");
         db = new Database(MainActivity.this);
+
         extracted(db.recuperarUsuarios());
         btnAdicionar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), GerenciarUsuario.class);
+
                 view.getContext().startActivity(intent);
             }
         });

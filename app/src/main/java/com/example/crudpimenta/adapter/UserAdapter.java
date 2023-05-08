@@ -74,6 +74,7 @@ public class UserAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), GerenciarUsuario.class);
+                intent.putExtra("id",u.getId());
                 view.getContext().startActivity(intent);
             }
         });
