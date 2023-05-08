@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -31,8 +33,8 @@ public class GerenciarUsuario extends AppCompatActivity {
     //good luck!
     private Database bd;
     private UserAdapter adapter;
-    private TextView textoInicial;
     private Usuario user;
+    private Button btnAdd,btnVoltar;
 
 
     @Override
@@ -45,14 +47,24 @@ public class GerenciarUsuario extends AppCompatActivity {
         bd = new Database(GerenciarUsuario.this);
         Intent intent = getIntent();
          int id = intent.getIntExtra("id",0);
-         textoInicial =  findViewById(R.id.textoInicial);
-         if(id==0){
-             textoInicial.setText("Tela de cadastro");
-         }else{
+         btnAdd = (Button) findViewById(R.id.btnAdd);
+         btnVoltar = (Button) findViewById(R.id.btnVoltar);
+
+         btnAdd.setText("Cadastrar");
+         if(id!=0){
              user = bd.recuperaPorId(id);
-             textoInicial.setText("Tela de edição");
+             btnAdd.setText("Atualizar");
 
          }
+        btnVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), MainActivity.class);
+
+                view.getContext().startActivity(intent);
+            }
+        });
+    }
 
    //     Log.d("user", "Valor: "+id);
      //   Log.d("userName", "Valor: "+user.getNome());
@@ -61,4 +73,3 @@ public class GerenciarUsuario extends AppCompatActivity {
     }
 
 
-}
