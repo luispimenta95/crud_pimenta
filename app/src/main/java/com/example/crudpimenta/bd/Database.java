@@ -16,9 +16,10 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
     private static final String NOME_BANCO = "crudpimenta";
     public static final String NOME_TABELA = "usuario";
-    private static final int VERSAO_BANCO = 1;
+    private static final int VERSAO_BANCO = 3;
     public static final String COLUNA_ID = "usuario_id";
     public static final String COLUNA_NOME = "usuario_nome";
+    public static final String COLUNA_CPF = "usuario_cpf";
     private Context context;
 
     public Database(@Nullable Context context) {
@@ -49,7 +50,7 @@ public class Database extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTableStatement = "CREATE TABLE " + NOME_TABELA + " (" + COLUNA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUNA_NOME + " TEXT)";
+        String createTableStatement = "CREATE TABLE " + NOME_TABELA + " (" + COLUNA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUNA_NOME + " VARCHAR(100), " + COLUNA_CPF + " VARCHAR(14) UNIQUE)";
         sqLiteDatabase.execSQL(createTableStatement);
     }
 
@@ -64,6 +65,7 @@ public class Database extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
 
         cv.put(COLUNA_NOME, user.getNome());
+        cv.put(COLUNA_CPF, user.getCpf());
 
         long insert = db.insert(NOME_TABELA, null, cv);
         db.close();
@@ -84,7 +86,7 @@ public class Database extends SQLiteOpenHelper {
                 new String[] { String.valueOf(id)});
     }
 
-    public boolean deleteOneCongViec(int id){
+    public boolean deleteUser(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String queryString = "DELETE FROM " + NOME_TABELA + " WHERE " + COLUNA_ID + " = " + id;
         Cursor cursor = db.rawQuery(queryString, null);
@@ -95,34 +97,22 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    // Delete a person by ID
 
-    //Select a person by ID
     public Usuario recuperaPorId(int id){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME},
+        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME,COLUNA_CPF},
                 COLUNA_ID + "=?",new String[] { String.valueOf(id) },
                 null, null, null, null);
-        if (cursor != null)
+        if (cursor != null) {
             cursor.moveToFirst();
-        Usuario congViec = new Usuario(id , cursor.getString(1));
+        }
+        Usuario user = new Usuario(id , cursor.getString(1), cursor.getString(2));
         cursor.close();
         db.close();
-        return congViec;
+        return user;
     }
 
-    public Usuario getContactByName(String name){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME},
-                COLUNA_NOME + "=?",new String[] { String.valueOf(name) },
-                null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        Usuario congViec = new Usuario(Integer.parseInt(cursor.getString(0).toString()) , name);
-        cursor.close();
-        db.close();
-        return congViec;
-    }
+
 
     public List<Usuario> recuperarUsuarios(){
         List<Usuario> returnList = new ArrayList<Usuario>();
@@ -132,10 +122,11 @@ public class Database extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()){
             do{
-                Usuario congViec = new Usuario();
-                congViec.setId(cursor.getInt(0));
-                congViec.setNome(cursor.getString(1));
-                returnList.add(congViec);
+                Usuario user = new Usuario();
+                user.setId(cursor.getInt(0));
+                user.setNome(cursor.getString(1));
+                user.setCpf(cursor.getString(2));
+                returnList.add(user);
             }while (cursor.moveToNext());
         }else {
 
@@ -146,17 +137,11 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // Get Count person in Table Person
-    public int getCongViecCount() {
-        String countQuery = "SELECT  * FROM " + NOME_TABELA ;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        cursor.close();
-        return cursor.getCount();
-    }
 
-    public int pesquisaPorCof(String text){
+
+    public int pesquisaPorCpf(String text){
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_NOME + "= "+ text + "";
+        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_CPF + " = " + text;
         Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
     }

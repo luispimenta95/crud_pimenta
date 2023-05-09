@@ -1,9 +1,8 @@
 package com.example.crudpimenta.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+
 import android.content.Intent;
-import android.database.Cursor;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,19 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SearchView;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuItemCompat;
+
 
 import com.example.crudpimenta.R;
-import com.example.crudpimenta.adapter.UserAdapter;
 import com.example.crudpimenta.bd.Database;
 import com.example.crudpimenta.model.Usuario;
+import com.example.crudpimenta.util.Helper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +30,11 @@ import java.util.List;
 public class GerenciarUsuario extends AppCompatActivity {
     //good luck!
     private Database bd;
-    private UserAdapter adapter;
+
     private Usuario user;
     private Button btnAdd,btnVoltar;
     private TextView inputNome,inputCpf;
+    Helper hp = new Helper();
 
 
     @Override
@@ -51,12 +50,15 @@ public class GerenciarUsuario extends AppCompatActivity {
          btnAdd = (Button) findViewById(R.id.btnAdd);
          btnVoltar = (Button) findViewById(R.id.btnVoltar);
          inputNome = (TextView) findViewById(R.id.inputNome);
+         inputCpf = (TextView) findViewById(R.id.inputCpf);
 
          btnAdd.setText("Cadastrar");
          if(id!=0){
              user = bd.recuperaPorId(id);
              btnAdd.setText("Atualizar");
              inputNome.setText(user.getNome());
+             inputCpf.setText(user.getCpf());
+             Log.d("userName", "Valor: "+user.getCpf());
 
          }
         btnVoltar.setOnClickListener(new View.OnClickListener() {
@@ -70,22 +72,30 @@ public class GerenciarUsuario extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int numCPF = bd.pesquisaPorCpf(inputCpf.getText().toString());
+                if(numCPF==0 && hp.isCPF(inputCpf.getText().toString())) {
 
+                    if (id == 0) {
+                        user = new Usuario();
+                        user.setNome(inputNome.getText().toString());
+                        user.setCpf(inputCpf.getText().toString());
+                        bd.addUser(user);
+                        Toast.makeText(GerenciarUsuario.this, "Registro salvo com sucesso !", Toast.LENGTH_LONG).show();
+                    } else {
 
-               if(id ==0){
-                   user = new Usuario();
-                   user.setNome(inputNome.getText().toString());
-                   bd.addUser(user);
-                   Toast.makeText(GerenciarUsuario.this, "Registro salvo com sucesso !", Toast.LENGTH_LONG).show();
-               }else{
+                        user = bd.recuperaPorId(id);
+                        bd.updateUser(id, inputNome.getText().toString());
+                        Toast.makeText(GerenciarUsuario.this, "Registro atualizado com sucesso !", Toast.LENGTH_LONG).show();
+                    }
+                    Intent intent = new Intent(view.getContext(), MainActivity.class);
 
-                   user = bd.recuperaPorId(id);
-                   bd.updateUser(id,inputNome.getText().toString());
-                   Toast.makeText(GerenciarUsuario.this, "Registro atualizado com sucesso !", Toast.LENGTH_LONG).show();
-               }
-                Intent intent = new Intent(view.getContext(), MainActivity.class);
+                    view.getContext().startActivity(intent);
+                }else{
+                    inputNome.setText("");
+                    inputCpf.setText("");
+                    Toast.makeText(GerenciarUsuario.this, "CPF já cadastrado ou inválido !", Toast.LENGTH_LONG).show();
+                }
 
-                view.getContext().startActivity(intent);
             }
         });
     }

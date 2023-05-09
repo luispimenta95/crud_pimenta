@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         diaBuilder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                db.deleteOneCongViec(id);
+                db.deleteUser(id);
                 Toast.makeText(MainActivity.this, "Registro excluido com sucesso !", Toast.LENGTH_SHORT).show();
                 extracted(db.recuperarUsuarios());
             }
