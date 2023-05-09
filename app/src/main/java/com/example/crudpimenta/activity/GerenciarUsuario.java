@@ -84,15 +84,14 @@ public class GerenciarUsuario extends AppCompatActivity {
                     } else {
 
                         user = bd.recuperaPorId(id);
-                        bd.updateUser(id, inputNome.getText().toString());
+
+                        bd.updateUser(id, inputNome.getText().toString(), inputCpf.getText().toString());
                         Toast.makeText(GerenciarUsuario.this, "Registro atualizado com sucesso !", Toast.LENGTH_LONG).show();
                     }
                     Intent intent = new Intent(view.getContext(), MainActivity.class);
 
                     view.getContext().startActivity(intent);
                 }else{
-                    inputNome.setText("");
-                    inputCpf.setText("");
                     Toast.makeText(GerenciarUsuario.this, "CPF já cadastrado ou inválido !", Toast.LENGTH_LONG).show();
                 }
 

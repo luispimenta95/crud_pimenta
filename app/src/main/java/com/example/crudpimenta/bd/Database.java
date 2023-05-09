@@ -16,7 +16,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
     private static final String NOME_BANCO = "crudpimenta";
     public static final String NOME_TABELA = "usuario";
-    private static final int VERSAO_BANCO = 3;
+    private static final int VERSAO_BANCO = 9;
     public static final String COLUNA_ID = "usuario_id";
     public static final String COLUNA_NOME = "usuario_nome";
     public static final String COLUNA_CPF = "usuario_cpf";
@@ -77,11 +77,13 @@ public class Database extends SQLiteOpenHelper {
     }
 
 
-    public int updateUser(int id, String name){
+    public int updateUser(int id, String name, String cpf){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COLUNA_NOME, name);
+        values.put(COLUNA_CPF, cpf);
+
         return db.update(NOME_TABELA,values, COLUNA_ID +"=?",
                 new String[] { String.valueOf(id)});
     }
