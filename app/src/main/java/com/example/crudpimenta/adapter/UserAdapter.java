@@ -64,7 +64,6 @@ public class UserAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             //Gán layout bằng biến
             view = inflater.inflate(layout, null);
-            //ánh xạ
             holder.txtTen = (TextView) view.findViewById(R.id.txt_ten);
             holder.imgDel = (ImageView) view.findViewById(R.id.iv_del);
             holder.imgEdit = (ImageView) view.findViewById(R.id.iv_edit);
@@ -87,7 +86,9 @@ public class UserAdapter extends BaseAdapter {
                 //define o titulo
                 builder.setTitle("Dados do usuário "+ u.getNome());
                 //define a mensagem
-                builder.setMessage("Nome: " + u.getNome()+"\n\n CPF: " + hp.imprimeCPF(u.getCpf()));
+                builder.setMessage("Nome: " + u.getNome()+
+                        "\n\n CPF: " + hp.imprimeCpf(u.getCpf()) +"\n\n Telefone: "
+                        + hp.imprimeTelefone(u.getTelefone()));
 
                 alerta = builder.create();
                 //Exibe

@@ -7,16 +7,17 @@ public class Usuario implements Serializable {
     private String nome;
 
     private String cpf;
-
+    private String telefone;
     public Usuario(int id, String nome) {
         this.id = id;
         this.nome = nome;
 
     }
-    public Usuario(int id, String nome, String cpf) {
+    public Usuario(int id, String nome, String cpf,String telefone) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
+        this.telefone = telefone;
 
     }
 
@@ -45,5 +46,13 @@ public class Usuario implements Serializable {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 }

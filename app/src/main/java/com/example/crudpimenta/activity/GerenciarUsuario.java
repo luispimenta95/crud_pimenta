@@ -33,7 +33,7 @@ public class GerenciarUsuario extends AppCompatActivity {
 
     private Usuario user;
     private Button btnAdd,btnVoltar;
-    private TextView inputNome,inputCpf;
+    private TextView inputNome,inputCpf,inputTelefone;
     Helper hp = new Helper();
 
 
@@ -51,13 +51,16 @@ public class GerenciarUsuario extends AppCompatActivity {
          btnVoltar = (Button) findViewById(R.id.btnVoltar);
          inputNome = (TextView) findViewById(R.id.inputNome);
          inputCpf = (TextView) findViewById(R.id.inputCpf);
+         inputTelefone = (TextView) findViewById(R.id.inputTelefone);
 
-         btnAdd.setText("Cadastrar");
+
+        btnAdd.setText("Cadastrar");
          if(id!=0){
              user = bd.recuperaPorId(id);
              btnAdd.setText("Atualizar");
              inputNome.setText(user.getNome());
              inputCpf.setText(user.getCpf());
+             inputTelefone.setText(user.getTelefone());
              Log.d("userName", "Valor: "+user.getCpf());
 
          }
@@ -79,13 +82,14 @@ public class GerenciarUsuario extends AppCompatActivity {
                         user = new Usuario();
                         user.setNome(inputNome.getText().toString());
                         user.setCpf(inputCpf.getText().toString());
+                        user.setTelefone(inputTelefone.getText().toString());
                         bd.addUser(user);
                         Toast.makeText(GerenciarUsuario.this, "Registro salvo com sucesso !", Toast.LENGTH_LONG).show();
                     } else {
 
                         user = bd.recuperaPorId(id);
 
-                        bd.updateUser(id, inputNome.getText().toString(), inputCpf.getText().toString());
+                        bd.updateUser(id, inputNome.getText().toString(), inputCpf.getText().toString(),inputTelefone.getText().toString());
                         Toast.makeText(GerenciarUsuario.this, "Registro atualizado com sucesso !", Toast.LENGTH_LONG).show();
                     }
                     Intent intent = new Intent(view.getContext(), MainActivity.class);
