@@ -6,11 +6,20 @@ public class Usuario implements Serializable {
     private int id;
     private String nome;
 
+    private String cpf;
+
     public Usuario(int id, String nome) {
         this.id = id;
         this.nome = nome;
 
     }
+    public Usuario(int id, String nome, String cpf) {
+        this.id = id;
+        this.nome = nome;
+        this.cpf = cpf;
+
+    }
+
     public Usuario(){}
 
     public int getId() {
@@ -30,4 +39,11 @@ public class Usuario implements Serializable {
     }
 
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 }

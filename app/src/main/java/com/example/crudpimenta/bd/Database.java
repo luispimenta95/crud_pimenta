@@ -14,14 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Database extends SQLiteOpenHelper {
-    private static final String NOTE_SQLITE = "note.sqlite";
-    public static final String TABLE_CONGVIEC = "CONGVIEC";
-    public static final String COLUMN_ID = "Id";
-    public static final String COLUMN_TEN_CV = "TenCV";
+    private static final String NOME_BANCO = "crudpimenta";
+    public static final String NOME_TABELA = "usuario";
+    private static final int VERSAO_BANCO = 3;
+    public static final String COLUNA_ID = "usuario_id";
+    public static final String COLUNA_NOME = "usuario_nome";
+    public static final String COLUNA_CPF = "usuario_cpf";
     private Context context;
 
     public Database(@Nullable Context context) {
-        super(context, NOTE_SQLITE, null, 1);
+        super(context, NOME_BANCO, null, VERSAO_BANCO);
         this.context = context;
     }
 
@@ -40,31 +42,32 @@ public class Database extends SQLiteOpenHelper {
     }
 
     //Tìm kiếm bằng query
-    public Cursor searchUsers(String text){
+    public Cursor pesquisaPorNome(String text){
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_CONGVIEC + " WHERE " + COLUMN_TEN_CV + " Like '%"+ text +"%'";
+        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_NOME + " Like '%"+ text +"%'";
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTableStatement = "CREATE TABLE " + TABLE_CONGVIEC + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TEN_CV + " TEXT)";
+        String createTableStatement = "CREATE TABLE " + NOME_TABELA + " (" + COLUNA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUNA_NOME + " VARCHAR(100), " + COLUNA_CPF + " VARCHAR(14) UNIQUE)";
         sqLiteDatabase.execSQL(createTableStatement);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CONGVIEC);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + NOME_TABELA);
         onCreate(sqLiteDatabase);
     }
 
-    public boolean addCongViec(Usuario congViec){
+    public boolean addUser(Usuario user){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_TEN_CV, congViec.getNome());
+        cv.put(COLUNA_NOME, user.getNome());
+        cv.put(COLUNA_CPF, user.getCpf());
 
-        long insert = db.insert(TABLE_CONGVIEC, null, cv);
+        long insert = db.insert(NOME_TABELA, null, cv);
         db.close();
         if(insert == -1){
             return false;
@@ -73,42 +76,19 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public boolean addCongViec(String tenCv){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
 
-        cv.put(COLUMN_TEN_CV, tenCv);
-
-        long insert = db.insert(TABLE_CONGVIEC, null, cv);
-        db.close();
-        if(insert == -1){
-            return false;
-        }else {
-            return true;
-        }
-    }
-
-    public int UpdateCongViec(Usuario congViec){
+    public int updateUser(int id, String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_TEN_CV,congViec.getNome());
-        return db.update(TABLE_CONGVIEC,values,COLUMN_ID +"=?",
-                new String[] { String.valueOf(congViec.getId())});
-    }
-
-    public int UpdateCongViec(int id, String name){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(COLUMN_TEN_CV, name);
-        return db.update(TABLE_CONGVIEC,values,COLUMN_ID +"=?",
+        values.put(COLUNA_NOME, name);
+        return db.update(NOME_TABELA,values, COLUNA_ID +"=?",
                 new String[] { String.valueOf(id)});
     }
 
-    public boolean deleteOneCongViec(Usuario congViec){
+    public boolean deleteUser(int id){
         SQLiteDatabase db = this.getWritableDatabase();
-        String queryString = "DELETE FROM " + TABLE_CONGVIEC + " WHERE " + COLUMN_ID + " = " + congViec.getId();
+        String queryString = "DELETE FROM " + NOME_TABELA + " WHERE " + COLUNA_ID + " = " + id;
         Cursor cursor = db.rawQuery(queryString, null);
         if(cursor.moveToFirst()){
             return true;
@@ -117,61 +97,36 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    // Delete a person by ID
-    public void deleteCongViec(Usuario congViec) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CONGVIEC, COLUMN_ID + " = ?",
-                new String[] { String.valueOf(congViec.getId()) });
-        db.close();
-    }
 
-    public void  deleteCongViec(String name)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CONGVIEC, COLUMN_TEN_CV + " = ?",
-                new String[] { String.valueOf(name) });
-        db.close();
-    }
-
-    //Select a person by ID
-    public Usuario getContactById(int id){
+    public Usuario recuperaPorId(int id){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_CONGVIEC, new String[] { COLUMN_ID, COLUMN_TEN_CV },
-                COLUMN_ID + "=?",new String[] { String.valueOf(id) },
+        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME,COLUNA_CPF},
+                COLUNA_ID + "=?",new String[] { String.valueOf(id) },
                 null, null, null, null);
-        if (cursor != null)
+        if (cursor != null) {
             cursor.moveToFirst();
-        Usuario congViec = new Usuario(id , cursor.getString(1));
+        }
+        Usuario user = new Usuario(id , cursor.getString(1), cursor.getString(2));
         cursor.close();
         db.close();
-        return congViec;
+        return user;
     }
 
-    public Usuario getContactByName(String name){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_CONGVIEC, new String[] { COLUMN_ID, COLUMN_TEN_CV},
-                COLUMN_TEN_CV + "=?",new String[] { String.valueOf(name) },
-                null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        Usuario congViec = new Usuario(Integer.parseInt(cursor.getString(0).toString()) , name);
-        cursor.close();
-        db.close();
-        return congViec;
-    }
 
-    public List<Usuario> getEveryone(){
+
+    public List<Usuario> recuperarUsuarios(){
         List<Usuario> returnList = new ArrayList<Usuario>();
         //get data from database
-        String selectQuery = "SELECT * FROM " + TABLE_CONGVIEC;
+        String selectQuery = "SELECT * FROM " + NOME_TABELA;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()){
             do{
-                Usuario congViec = new Usuario();
-                congViec.setId(cursor.getInt(0));
-                congViec.setNome(cursor.getString(1));
-                returnList.add(congViec);
+                Usuario user = new Usuario();
+                user.setId(cursor.getInt(0));
+                user.setNome(cursor.getString(1));
+                user.setCpf(cursor.getString(2));
+                returnList.add(user);
             }while (cursor.moveToNext());
         }else {
 
@@ -182,11 +137,12 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // Get Count person in Table Person
-    public int getCongViecCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_CONGVIEC;
+
+
+    public int pesquisaPorCpf(String text){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        cursor.close();
+        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_CPF + " = " + text;
+        Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
     }
 }

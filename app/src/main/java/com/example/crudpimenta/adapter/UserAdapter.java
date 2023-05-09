@@ -1,6 +1,10 @@
 package com.example.crudpimenta.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.crudpimenta.R;
+import com.example.crudpimenta.activity.GerenciarUsuario;
 import com.example.crudpimenta.activity.MainActivity;
 import com.example.crudpimenta.model.Usuario;
+import com.example.crudpimenta.util.Helper;
 
 import java.util.List;
 
@@ -19,6 +25,8 @@ public class UserAdapter extends BaseAdapter {
     private MainActivity context;
     private int layout;
     private List<Usuario> usuarios;
+    private AlertDialog alerta;
+    Helper hp = new Helper();
 
     public UserAdapter(MainActivity context, int layout, List<Usuario> users) {
         this.context = context;
@@ -33,7 +41,8 @@ public class UserAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView txtTen;
-        ImageView imgDel, imgEdit;
+        ImageView imgDel, imgEdit, imgView;
+        MainActivity ma;
 
     }
 
@@ -59,6 +68,8 @@ public class UserAdapter extends BaseAdapter {
             holder.txtTen = (TextView) view.findViewById(R.id.txt_ten);
             holder.imgDel = (ImageView) view.findViewById(R.id.iv_del);
             holder.imgEdit = (ImageView) view.findViewById(R.id.iv_edit);
+            holder.imgView = (ImageView) view.findViewById(R.id.iv_view);
+
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -67,21 +78,42 @@ public class UserAdapter extends BaseAdapter {
         Usuario u = usuarios.get(i);
         holder.txtTen.setText(u.getNome());
 
-        //bắt sự kiện xóa và sửa
+
+        holder.imgView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                //define o titulo
+                builder.setTitle("Dados do usuário "+ u.getNome());
+                //define a mensagem
+                builder.setMessage("Nome: " + u.getNome()+"\n\n CPF: " + hp.imprimeCPF(u.getCpf()));
+
+                alerta = builder.create();
+                //Exibe
+                alerta.show();
+
+                Log.i("Dados", "Nome:"+u.getNome() +"\n\n CPF:" +u.getCpf());
+            }
+        });
+
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Sửa " + u.getNome(), Toast.LENGTH_SHORT).show();
-                context.dialogSua(u.getId(), u.getNome());
+                Intent intent = new Intent(view.getContext(), GerenciarUsuario.class);
+                intent.putExtra("id",u.getId());
+                view.getContext().startActivity(intent);
             }
         });
 
         holder.imgDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.xoaCv(u.getId(), u.getNome());
+                context.excluirUsuario(u.getId(), u.getNome());
             }
         });
         return view;
+
     }
+
 }
