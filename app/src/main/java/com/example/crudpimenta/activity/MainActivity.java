@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extracted(List<Usuario> arrCongViec) {
-        adapter = new UserAdapter(this, R.layout.item_cong_viec, arrCongViec);
+        adapter = new UserAdapter(this, R.layout.item_lista_user, arrCongViec);
         listUsers.setAdapter(adapter);
     }
 
@@ -78,13 +78,17 @@ public class MainActivity extends AppCompatActivity {
 
                 ArrayList<Usuario> pesquisa = new ArrayList<>();
                 Cursor cursor = db.pesquisaPorNome(s);
-                //arrCV.clear();
-                while (cursor.moveToNext()){
-                    int IdCV = cursor.getInt(0);
-                    String tencv = cursor.getString(1);
-                    pesquisa.add(new Usuario(IdCV, tencv));
+                if(cursor.getCount()==0){
+                    Toast.makeText(MainActivity.this, "Nenhum dado encontrado !", Toast.LENGTH_SHORT).show();
+
+                }else {
+                    while (cursor.moveToNext()) {
+                        int id = cursor.getInt(0);
+                        String text = cursor.getString(1);
+                        pesquisa.add(new Usuario(id, text));
+                    }
                 }
-                UserAdapter adapterSearch = new UserAdapter(MainActivity.this, R.layout.item_cong_viec, pesquisa);
+                UserAdapter adapterSearch = new UserAdapter(MainActivity.this, R.layout.item_lista_user, pesquisa);
                 listUsers.setAdapter(adapterSearch);
                 adapterSearch.notifyDataSetChanged();
                 return true;

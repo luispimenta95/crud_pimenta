@@ -42,7 +42,7 @@ public class UserAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView txtTen;
         ImageView imgDel, imgEdit, imgView;
-        MainActivity ma;
+
 
     }
 
