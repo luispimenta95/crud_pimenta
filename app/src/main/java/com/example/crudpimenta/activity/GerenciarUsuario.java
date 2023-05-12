@@ -46,24 +46,24 @@ public class GerenciarUsuario extends AppCompatActivity {
         // instanciar bd
         bd = new Database(GerenciarUsuario.this);
         Intent intent = getIntent();
-         int id = intent.getIntExtra("id",0);
-         btnAdd = (Button) findViewById(R.id.btnAdd);
-         btnVoltar = (Button) findViewById(R.id.btnVoltar);
-         inputNome = (TextView) findViewById(R.id.inputNome);
-         inputCpf = (TextView) findViewById(R.id.inputCpf);
-         inputTelefone = (TextView) findViewById(R.id.inputTelefone);
+        int id = intent.getIntExtra("id",0);
+        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnVoltar = (Button) findViewById(R.id.btnVoltar);
+        inputNome = (TextView) findViewById(R.id.inputNome);
+        inputCpf = (TextView) findViewById(R.id.inputCpf);
+        inputTelefone = (TextView) findViewById(R.id.inputTelefone);
 
 
         btnAdd.setText("Cadastrar");
-         if(id!=0){
-             user = bd.recuperaPorId(id);
-             btnAdd.setText("Atualizar");
-             inputNome.setText(user.getNome());
-             inputCpf.setText(user.getCpf());
-             inputTelefone.setText(user.getTelefone());
-             Log.d("userName", "Valor: "+user.getCpf());
+        if(id!=0){
+            user = bd.recuperaPorId(id);
+            btnAdd.setText("Atualizar");
+            inputNome.setText(user.getNome());
+            inputCpf.setText(user.getCpf());
+            inputTelefone.setText(user.getTelefone());
+            Log.d("userName", "Valor: "+user.getCpf());
 
-         }
+        }
         btnVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,13 +110,9 @@ public class GerenciarUsuario extends AppCompatActivity {
             }
         });
     }
-    }
+}
 
 
-   //     Log.d("user", "Valor: "+id);
-     //   Log.d("userName", "Valor: "+user.getNome());
-
-
-
-
+//     Log.d("user", "Valor: "+id);
+//   Log.d("userName", "Valor: "+user.getNome());
 
