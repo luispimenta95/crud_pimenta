@@ -155,6 +155,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     public int pesquisaPorCpf(String text){
+
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_CPF + " = " + text;
         Cursor cursor = db.rawQuery(query, null);

@@ -76,29 +76,37 @@ public class GerenciarUsuario extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int numCPF = bd.pesquisaPorCpf(inputCpf.getText().toString());
-                if(numCPF==0 && hp.isCPF(inputCpf.getText().toString())) {
 
-                    if (id == 0) {
-                        user = new Usuario();
-                        user.setNome(inputNome.getText().toString());
-                        user.setCpf(inputCpf.getText().toString());
-                        user.setTelefone(inputTelefone.getText().toString());
-                        bd.addUser(user);
-                        Toast.makeText(GerenciarUsuario.this, "Registro salvo com sucesso !", Toast.LENGTH_LONG).show();
+                if (inputNome.getText().toString()=="" ||
+                        inputCpf.getText().toString().trim().equals("") || inputTelefone.getText().toString().trim().equals("")) {
+
+                    Toast.makeText(GerenciarUsuario.this, "Registro salvo com sucesso !", Toast.LENGTH_LONG).show();
+
+                } else {
+                    if (numCPF == 0 && hp.isCPF(inputCpf.getText().toString()) || user.getCpf().toString() == inputCpf.getText().toString()) {
+
+                        if (id == 0) {
+                            user = new Usuario();
+                            user.setNome(inputNome.getText().toString());
+                            user.setCpf(inputCpf.getText().toString());
+                            user.setTelefone(inputTelefone.getText().toString());
+                            bd.addUser(user);
+                            Toast.makeText(GerenciarUsuario.this, "Registro salvo com sucesso !", Toast.LENGTH_LONG).show();
+                        } else {
+
+                            user = bd.recuperaPorId(id);
+
+                            bd.updateUser(id, inputNome.getText().toString(), inputCpf.getText().toString(), inputTelefone.getText().toString());
+                            Toast.makeText(GerenciarUsuario.this, "Registro atualizado com sucesso !", Toast.LENGTH_LONG).show();
+                        }
+                        Intent intent = new Intent(view.getContext(), MainActivity.class);
+
+                        view.getContext().startActivity(intent);
                     } else {
-
-                        user = bd.recuperaPorId(id);
-
-                        bd.updateUser(id, inputNome.getText().toString(), inputCpf.getText().toString(),inputTelefone.getText().toString());
-                        Toast.makeText(GerenciarUsuario.this, "Registro atualizado com sucesso !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(GerenciarUsuario.this, "CPF já cadastrado ou inválido !", Toast.LENGTH_LONG).show();
                     }
-                    Intent intent = new Intent(view.getContext(), MainActivity.class);
 
-                    view.getContext().startActivity(intent);
-                }else{
-                    Toast.makeText(GerenciarUsuario.this, "CPF já cadastrado ou inválido !", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
     }
