@@ -22,31 +22,17 @@ public class Database extends SQLiteOpenHelper {
     public static final String COLUNA_NOME = "usuario_nome";
     public static final String COLUNA_CPF = "usuario_cpf";
     public static final String COLUNA_TELEFONE = "usuario_telefone";
+
+    public static final String ORDENACAO = " ORDER BY " + COLUNA_NOME +" ASC"; // ORDENA POR ORDEM ALFABÉTICA
     private Context context;
 
     public Database(@Nullable Context context) {
         super(context, NOME_BANCO, null, VERSAO_BANCO);
         this.context = context;
     }
-
-    //truy vấn không trả về kết quả: CREATE, INSERT, UPDATE, DELETE...
-    public void QueryData(String sql){
-        SQLiteDatabase database = getWritableDatabase();
-        //để thực thi lệnh cần gọi
-        database.execSQL(sql);
-    }
-
-    //truy vấn có trả về kết quả: SELECT
-    //dữ liệu trả về dưới dạng con trỏ từng dòng (cursor)
-    public Cursor GetData(String sql){
-        SQLiteDatabase database = getReadableDatabase();
-        return database.rawQuery(sql, null);
-    }
-
-    //Tìm kiếm bằng query
     public Cursor pesquisaPorNome(String text){
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_NOME + " Like '%"+ text +"%'";
+        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_NOME + " Like '%"+ text +"%'" + ORDENACAO;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
@@ -132,7 +118,7 @@ public class Database extends SQLiteOpenHelper {
     public List<Usuario> recuperarUsuarios(){
         List<Usuario> returnList = new ArrayList<Usuario>();
         //get data from database
-        String selectQuery = "SELECT * FROM " + NOME_TABELA;
+        String selectQuery = "SELECT * FROM " + NOME_TABELA + ORDENACAO;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if(cursor.moveToFirst()){
