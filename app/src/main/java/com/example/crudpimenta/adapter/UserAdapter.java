@@ -82,13 +82,22 @@ public class UserAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
+                Log.d("telefone" ,"tam:" +u.getTelefone().length());
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 //define o titulo
+
                 builder.setTitle("Dados do usuário "+ u.getNome());
-                //define a mensagem
-                builder.setMessage("Nome: " + u.getNome()+
-                        "\n\n CPF: " + hp.imprimeCpf(u.getCpf()) +"\n\n Telefone: "
-                        + hp.imprimeTelefone(u.getTelefone()));
+
+                if(u.getTelefone().length()==11) {
+                    //define a mensagem
+                    builder.setMessage("Nome: " + u.getNome() +
+                            "\n\n CPF: " + hp.imprimeCpf(u.getCpf()) + "\n\n Telefone: "
+                            + hp.imprimeTelefone(u.getTelefone()));
+                }else{
+                    builder.setMessage("Nome: " + u.getNome() +
+                            "\n\n CPF: " + hp.imprimeCpf(u.getCpf()) + "\n\n Telefone: "
+                            + hp.imprimeTelefoneAlterado(u.getTelefone()));
+                }
 
                 alerta = builder.create();
                 //Exibe

@@ -6,6 +6,7 @@ import androidx.core.view.MenuItemCompat;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -42,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         btnAdicionar = (Button) findViewById(R.id.btnAddUser);
         btnAdicionar.setText("Adicionar usuário");
         db = new Database(MainActivity.this);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         extracted(db.recuperarUsuarios());
         btnAdicionar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.add_congviec, menu);
+        inflater.inflate(R.menu.menu_usuer, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
