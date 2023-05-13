@@ -22,7 +22,7 @@ public class Database extends SQLiteOpenHelper {
     public static final String COLUNA_NOME = "usuario_nome";
     public static final String COLUNA_CPF = "usuario_cpf";
     public static final String COLUNA_TELEFONE = "usuario_telefone";
-    //teste
+    //teste protect2
 
     public static final String ORDENACAO = " ORDER BY " + COLUNA_NOME +" ASC"; // ORDENA POR ORDEM ALFABÉTICA
     private Context context;
