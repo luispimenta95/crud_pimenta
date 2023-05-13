@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Database extends SQLiteOpenHelper {
-    private static final String NOME_BANCO = "crudpimenta";
+    private static final String NOME_BANCO = "crudsistematizacao";
     public static final String NOME_TABELA = "usuario";
-    private static final int VERSAO_BANCO = 20;
+    private static final int VERSAO_BANCO = 1;
     public static final String COLUNA_ID = "usuario_id";
     public static final String COLUNA_NOME = "usuario_nome";
     public static final String COLUNA_CPF = "usuario_cpf";
