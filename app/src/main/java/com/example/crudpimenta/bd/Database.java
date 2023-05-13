@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -16,10 +17,11 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
     private static final String NOME_BANCO = "crudpimenta";
     public static final String NOME_TABELA = "usuario";
-    private static final int VERSAO_BANCO = 3;
+    private static final int VERSAO_BANCO = 20;
     public static final String COLUNA_ID = "usuario_id";
     public static final String COLUNA_NOME = "usuario_nome";
     public static final String COLUNA_CPF = "usuario_cpf";
+    public static final String COLUNA_TELEFONE = "usuario_telefone";
     private Context context;
 
     public Database(@Nullable Context context) {
@@ -50,7 +52,10 @@ public class Database extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTableStatement = "CREATE TABLE " + NOME_TABELA + " (" + COLUNA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUNA_NOME + " VARCHAR(100), " + COLUNA_CPF + " VARCHAR(14) UNIQUE)";
+        String createTableStatement = "CREATE TABLE " + NOME_TABELA +
+                " (" + COLUNA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUNA_NOME + " VARCHAR(100), " + COLUNA_CPF + " VARCHAR(14) UNIQUE" +
+                ", " + COLUNA_TELEFONE + " VARCHAR(25))";
         sqLiteDatabase.execSQL(createTableStatement);
     }
 
@@ -66,6 +71,8 @@ public class Database extends SQLiteOpenHelper {
 
         cv.put(COLUNA_NOME, user.getNome());
         cv.put(COLUNA_CPF, user.getCpf());
+        cv.put(COLUNA_TELEFONE, user.getTelefone());
+
 
         long insert = db.insert(NOME_TABELA, null, cv);
         db.close();
@@ -77,11 +84,14 @@ public class Database extends SQLiteOpenHelper {
     }
 
 
-    public int updateUser(int id, String name){
+    public int updateUser(int id, String name, String cpf, String telefone){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COLUNA_NOME, name);
+        values.put(COLUNA_CPF, cpf);
+        values.put(COLUNA_TELEFONE, telefone);
+
         return db.update(NOME_TABELA,values, COLUNA_ID +"=?",
                 new String[] { String.valueOf(id)});
     }
@@ -100,13 +110,18 @@ public class Database extends SQLiteOpenHelper {
 
     public Usuario recuperaPorId(int id){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME,COLUNA_CPF},
+        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME,COLUNA_CPF,COLUNA_TELEFONE},
                 COLUNA_ID + "=?",new String[] { String.valueOf(id) },
                 null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
-        Usuario user = new Usuario(id , cursor.getString(1), cursor.getString(2));
+        Usuario user = new Usuario(
+                id ,
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3)
+        );
         cursor.close();
         db.close();
         return user;
@@ -126,6 +141,7 @@ public class Database extends SQLiteOpenHelper {
                 user.setId(cursor.getInt(0));
                 user.setNome(cursor.getString(1));
                 user.setCpf(cursor.getString(2));
+                user.setTelefone(cursor.getString(3));
                 returnList.add(user);
             }while (cursor.moveToNext());
         }else {
@@ -140,9 +156,14 @@ public class Database extends SQLiteOpenHelper {
 
 
     public int pesquisaPorCpf(String text){
+
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_CPF + " = " + text;
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME,COLUNA_CPF,COLUNA_TELEFONE},
+                COLUNA_CPF + "=?",new String[] { String.valueOf(text) },
+                null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
         return cursor.getCount();
     }
 }

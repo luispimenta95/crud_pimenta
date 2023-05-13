@@ -42,7 +42,7 @@ public class UserAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView txtTen;
         ImageView imgDel, imgEdit, imgView;
-        MainActivity ma;
+
 
     }
 
@@ -64,7 +64,6 @@ public class UserAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             //Gán layout bằng biến
             view = inflater.inflate(layout, null);
-            //ánh xạ
             holder.txtTen = (TextView) view.findViewById(R.id.txt_ten);
             holder.imgDel = (ImageView) view.findViewById(R.id.iv_del);
             holder.imgEdit = (ImageView) view.findViewById(R.id.iv_edit);
@@ -83,11 +82,22 @@ public class UserAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
+                Log.d("telefone" ,"tam:" +u.getTelefone().length());
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 //define o titulo
+
                 builder.setTitle("Dados do usuário "+ u.getNome());
-                //define a mensagem
-                builder.setMessage("Nome: " + u.getNome()+"\n\n CPF: " + hp.imprimeCPF(u.getCpf()));
+
+                if(u.getTelefone().length()==11) {
+                    //define a mensagem
+                    builder.setMessage("Nome: " + u.getNome() +
+                            "\n\n CPF: " + hp.imprimeCpf(u.getCpf()) + "\n\n Telefone: "
+                            + hp.imprimeTelefone(u.getTelefone()));
+                }else{
+                    builder.setMessage("Nome: " + u.getNome() +
+                            "\n\n CPF: " + hp.imprimeCpf(u.getCpf()) + "\n\n Telefone: "
+                            + hp.imprimeTelefoneAlterado(u.getTelefone()));
+                }
 
                 alerta = builder.create();
                 //Exibe
