@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
     private static final String NOME_BANCO = "crudpimenta";
     public static final String NOME_TABELA = "usuario";
-    private static final int VERSAO_BANCO = 14;
+    private static final int VERSAO_BANCO = 20;
     public static final String COLUNA_ID = "usuario_id";
     public static final String COLUNA_NOME = "usuario_nome";
     public static final String COLUNA_CPF = "usuario_cpf";
@@ -157,8 +158,12 @@ public class Database extends SQLiteOpenHelper {
     public int pesquisaPorCpf(String text){
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + NOME_TABELA + " WHERE " + COLUNA_CPF + " = " + text;
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(NOME_TABELA, new String[] {COLUNA_ID, COLUNA_NOME,COLUNA_CPF,COLUNA_TELEFONE},
+                COLUNA_CPF + "=?",new String[] { String.valueOf(text) },
+                null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
         return cursor.getCount();
     }
 }
